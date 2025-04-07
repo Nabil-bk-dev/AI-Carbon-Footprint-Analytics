@@ -21,4 +21,14 @@ router.post('/', (req, res) => {
     .catch((err) => res.status(400).json('Erreur: ' + err));
 });
 
+//get the database
+router.get('/', async (req, res) => {
+  try {
+    const models = await Model.find();
+    res.json(models);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
