@@ -13,13 +13,13 @@ export const Charts: React.FC<ChartsProps> = ({ models, selectedModel }) => {
 
   useEffect(() => {
     if (!barChartRef.current) return;
-
-    // Clear previous chart
     d3.select(barChartRef.current).selectAll('*').remove();
 
-    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-    const width = 500 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;
+    const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+    const container = barChartRef.current.parentElement;
+    const boundingRect = container?.getBoundingClientRect();
+    const width = (boundingRect?.width || 800) - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
 
     const svg = d3.select(barChartRef.current)
       .attr('width', width + margin.left + margin.right)
@@ -27,12 +27,8 @@ export const Charts: React.FC<ChartsProps> = ({ models, selectedModel }) => {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const x = d3.scaleBand()
-      .range([0, width])
-      .padding(0.1);
-
-    const y = d3.scaleLinear()
-      .range([height, 0]);
+    const x = d3.scaleBand().range([0, width]).padding(0.1);
+    const y = d3.scaleLinear().range([height, 0]);
 
     x.domain(models.map(d => d.name));
     y.domain([0, d3.max(models, d => d.co2Emissions) || 0]);
@@ -46,8 +42,7 @@ export const Charts: React.FC<ChartsProps> = ({ models, selectedModel }) => {
       .attr('dy', '.15em')
       .attr('transform', 'rotate(-45)');
 
-    svg.append('g')
-      .call(d3.axisLeft(y));
+    svg.append('g').call(d3.axisLeft(y));
 
     svg.selectAll('.bar')
       .data(models)
@@ -60,7 +55,6 @@ export const Charts: React.FC<ChartsProps> = ({ models, selectedModel }) => {
       .attr('fill', d => selectedModel?.id === d.id ? '#2563EB' : '#10B981')
       .attr('opacity', d => selectedModel?.id === d.id ? 1 : 0.7);
 
-    // Add labels
     svg.append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', 0 - margin.left)
@@ -68,18 +62,17 @@ export const Charts: React.FC<ChartsProps> = ({ models, selectedModel }) => {
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
       .text('CO₂ Emissions (kg)');
-
   }, [models, selectedModel]);
 
   useEffect(() => {
     if (!scatterPlotRef.current) return;
-
-    // Clear previous chart
     d3.select(scatterPlotRef.current).selectAll('*').remove();
 
-    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-    const width = 500 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;
+    const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+    const container = scatterPlotRef.current.parentElement;
+    const boundingRect = container?.getBoundingClientRect();
+    const width = (boundingRect?.width || 800) - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
 
     const svg = d3.select(scatterPlotRef.current)
       .attr('width', width + margin.left + margin.right)
@@ -112,9 +105,8 @@ export const Charts: React.FC<ChartsProps> = ({ models, selectedModel }) => {
       .style('fill', d => selectedModel?.id === d.id ? '#2563EB' : '#10B981')
       .style('opacity', d => selectedModel?.id === d.id ? 1 : 0.7);
 
-    // Add labels
     svg.append('text')
-      .attr('transform', `translate(${width/2},${height + margin.top + 20})`)
+      .attr('transform', `translate(${width / 2},${height + margin.top + 20})`)
       .style('text-anchor', 'middle')
       .text('Training Time (hours)');
 
@@ -125,18 +117,17 @@ export const Charts: React.FC<ChartsProps> = ({ models, selectedModel }) => {
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
       .text('Energy Consumption (kWh)');
-
   }, [models, selectedModel]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="bg-white p-4 rounded-lg shadow-md">
+    <div className="space-y-8">
+      <div className="w-full bg-white p-4 rounded-lg shadow-md">
         <h3 className="text-lg font-semibold mb-4">CO₂ Emissions by Model</h3>
-        <svg ref={barChartRef}></svg>
+        <svg ref={barChartRef} className="w-full h-auto"></svg>
       </div>
-      <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="w-full bg-white p-4 rounded-lg shadow-md">
         <h3 className="text-lg font-semibold mb-4">Energy vs Training Time</h3>
-        <svg ref={scatterPlotRef}></svg>
+        <svg ref={scatterPlotRef} className="w-full h-auto"></svg>
       </div>
     </div>
   );

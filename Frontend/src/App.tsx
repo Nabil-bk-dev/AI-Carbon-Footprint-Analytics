@@ -279,7 +279,7 @@ function App() {
       />
       <main className="container mx-auto py-8 px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 h-[500px] overflow-y-auto">
             <ModelList 
               models={filteredModels}
               onSelectModel={setSelectedModel}
@@ -287,17 +287,23 @@ function App() {
             />
           </div>
           <div className="lg:col-span-2 space-y-8">
-            <Map 
-              models={filteredModels}
-              selectedModel={selectedModel}
-            />
-            <Charts 
-              models={filteredModels}
-              selectedModel={selectedModel}
-            />
+            {/* Graphique 1 : CO₂ Emissions by Model */}
+            <div className="w-full mb-8">
+              <Map 
+                models={filteredModels}
+                selectedModel={selectedModel}
+              />
+            </div>
           </div>
         </div>
       </main>
+            {/* Graphique 2 : Energy vs Training Time */}
+            <div className="w-full mb-8">
+              <Charts 
+                models={filteredModels}
+                selectedModel={selectedModel}
+              />
+            </div>
       <Filters
         isOpen={isFiltersOpen}
         onClose={() => setIsFiltersOpen(false)}
@@ -311,3 +317,6 @@ function App() {
 }
 
 export default App;
+
+
+
