@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Header } from './components/Header';
-import { ModelList } from './components/ModelList';
-import { Map } from './components/Map';
-import { Charts } from './components/Charts';
-import { Filters } from './components/Filters';
-import { AIModel, FilterOptions } from './types/AIModel';
+import { Header } from './Header';
+import { ModelList } from './ModelList';
+import { Map } from './Map';
+import { Charts } from './Charts';
+import { Filters } from './Filters';
+import { AIModel, FilterOptions } from '../types/AIModel';
 
 function Dashboard() {
   const [models, setModels] = useState<AIModel[]>([]);

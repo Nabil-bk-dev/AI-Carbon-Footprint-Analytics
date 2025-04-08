@@ -1,12 +1,18 @@
-import  { useState } from 'react';
-import { Leaf, Users, Lock, Mail, ArrowRight, CheckCircle2, Globe, LineChart } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import './index.css';
-
+import { useState } from 'react';
+import {
+  Leaf,
+  Users,
+  CheckCircle2 as CheckIcon,
+  Globe,
+  LineChart,
+  Lock as LockIcon
+} from 'lucide-react';
+import LoginForm from '../components/LoginForm';
+import SignupForm from '../components/SignupForm';
+import '../index.css';
 
 function Home() {
   const [isSignup, setIsSignup] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white">
@@ -19,8 +25,18 @@ function Home() {
               <span className="ml-2 text-xl font-bold text-green-600">EcoApp</span>
             </div>
             <div className="flex items-center space-x-4">
-              <button onClick={() => navigate('/dashboard')} className="text-gray-600 hover:text-green-600 transition-colors">Login</button>
-              <button onClick={() => setIsSignup(true)} className="px-6 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Sign Up</button>
+              <button
+                onClick={() => setIsSignup(false)}
+                className="text-gray-600 hover:text-green-600 transition-colors"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setIsSignup(true)}
+                className="px-6 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                Sign Up
+              </button>
             </div>
           </div>
         </div>
@@ -38,12 +54,11 @@ function Home() {
             {/* Left side - Content */}
             <div className="lg:w-1/2 mb-12 lg:mb-0">
               <div className="inline-flex items-center px-4 py-2 bg-green-50 rounded-full text-green-700 text-sm font-medium mb-6">
-                <CheckCircle2 className="h-4 w-4 mr-2" />
+                <CheckIcon className="h-4 w-4 mr-2" />
                 Déjà plus de 10,000 utilisateurs nous font confiance
               </div>
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Construisons ensemble un{' '}
-                <span className="text-green-600">avenir plus vert</span>
+                Construisons ensemble un <span className="text-green-600">avenir plus vert</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 Notre application vous aide à suivre et réduire votre empreinte carbone au quotidien. 
@@ -69,55 +84,14 @@ function Home() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   {isSignup ? 'Créer un compte' : 'Se connecter'}
                 </h2>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        type="email"
-                        className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow"
-                        placeholder="votre@email.com"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        type="password"
-                        className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow"
-                        placeholder="••••••••"
-                      />
-                    </div>
-                  </div>
-                  {isSignup && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <input
-                          type="password"
-                          className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-shadow"
-                          placeholder="••••••••"
-                        />
-                      </div>
-                    </div>
-                  )}
-                  <button
-                    type="submit"
-                    className="w-full bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 flex items-center justify-center transform hover:-translate-y-0.5 transition-all shadow-lg hover:shadow-xl"
-                  >
-                    {isSignup ? 'Créer un compte' : 'Se connecter'}
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </button>
-                </form>
+
+                {isSignup ? <SignupForm /> : <LoginForm />}
+
                 <p className="mt-6 text-center text-sm text-gray-600">
                   {isSignup ? (
-                    <>Déjà un compte? <button onClick={() => setIsSignup(false)} className="text-green-600 hover:text-green-700 font-medium">Se connecter</button></>
+                    <>Déjà un compte ? <button onClick={() => setIsSignup(false)} className="text-green-600 hover:text-green-700 font-medium">Se connecter</button></>
                   ) : (
-                    <>Pas encore de compte? <button onClick={() => setIsSignup(true)} className="text-green-600 hover:text-green-700 font-medium">S'inscrire</button></>
+                    <>Pas encore de compte ? <button onClick={() => setIsSignup(true)} className="text-green-600 hover:text-green-700 font-medium">S'inscrire</button></>
                   )}
                 </p>
               </div>
@@ -153,7 +127,7 @@ function Home() {
               </div>
               <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 transform hover:-translate-y-2 transition-all">
                 <div className="bg-green-50 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-6">
-                  <Lock className="h-8 w-8 text-green-600" />
+                  <LockIcon className="h-8 w-8 text-green-600" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">Sécurité Garantie</h3>
                 <p className="text-gray-600 text-center leading-relaxed">
