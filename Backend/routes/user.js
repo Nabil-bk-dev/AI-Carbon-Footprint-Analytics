@@ -1,7 +1,9 @@
-const router = require("express").Router(); // ✅ avec les parenthèses
+const router = require("express").Router();
 const { User, validate } = require("../models/user");
 const bcrypt = require("bcrypt");
+const auth = require("../middleware/auth"); // ✅ middleware ajouté
 
+// ✅ Inscription
 router.post("/", async (req, res) => {
   try {
     const { error } = validate(req.body);
@@ -11,7 +13,7 @@ router.post("/", async (req, res) => {
 
     const existingUser = await User.findOne({ email: req.body.email });
     if (existingUser) {
-      return res.status(409).send({ message: "Un utilisateur avec cet email existe déjà." }); // ✅ avec return
+      return res.status(409).send({ message: "Un utilisateur avec cet email existe déjà." });
     }
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
@@ -25,4 +27,16 @@ router.post("/", async (req, res) => {
   }
 });
 
-module.exports = router; // ✅ export du routeur
+// ✅ Route protégée pour récupérer l'email
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("email");
+    if (!user) return res.status(404).send({ message: "Utilisateur non trouvé" });
+
+    res.send({ email: user.email });
+  } catch (error) {
+    res.status(500).send({ message: "Erreur serveur" });
+  }
+});
+
+module.exports = router;

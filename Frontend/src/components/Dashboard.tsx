@@ -1,3 +1,4 @@
+// Dashboard.tsx
 import { useEffect, useMemo, useState } from 'react';
 import { Header } from './Header';
 import { ModelList } from './ModelList';
@@ -5,6 +6,9 @@ import { Map } from './Map';
 import { Charts } from './Charts';
 import { Filters } from './Filters';
 import { AIModel, FilterOptions } from '../types/AIModel';
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from 'react-router-dom';
+
 
 function Dashboard() {
   const [models, setModels] = useState<AIModel[]>([]);
@@ -19,10 +23,19 @@ function Dashboard() {
     country: [],
   });
 
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+
+  const handleLogout = () => {
+    logout();
+    navigate('/'); // 👈 redirection vers la page de login
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/models'); 
+        const res = await fetch('http://localhost:5000/api/models');
         if (!res.ok) throw new Error('Erreur lors du chargement des données');
         const data: AIModel[] = await res.json();
         setModels(data);
@@ -66,7 +79,12 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header models={filteredModels} onOpenFilters={() => setIsFiltersOpen(true)} />
+      <Header
+        models={filteredModels}
+        onOpenFilters={() => setIsFiltersOpen(true)}
+        user={{ name: '', email: user ?? 'Utilisateur inconnu' }}
+        onLogout={handleLogout}
+      />
       <main className="container mx-auto py-8 px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 h-[500px] overflow-y-auto">

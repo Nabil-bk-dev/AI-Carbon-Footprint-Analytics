@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import {
   Leaf,
   Users,
@@ -10,10 +10,22 @@ import {
 import LoginForm from '../components/LoginForm';
 import SignupForm from '../components/SignupForm';
 import '../index.css';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 
 function Home() {
-  const [isSignup, setIsSignup] = useState(false);
+  const [isSignup, setIsSignup] = useState(true); // par défaut afficher signup
+const location = useLocation();
+const navigate = useNavigate(); // 👈 utile pour nettoyer le state
 
+useEffect(() => {
+  if (location.state?.showLogin) {
+    setIsSignup(false); // forcer le formulaire login
+    navigate(location.pathname, { replace: true }); // nettoie location.state après redirection
+  }
+}, [location, navigate]);
+
+  
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}

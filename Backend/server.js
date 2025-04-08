@@ -20,8 +20,8 @@ app.use(express.json());
 const modelsRoutes = require("./routes/models");
 app.use("/api/models", modelsRoutes);
 
-app.use("api/users",userRoutes);
-app.use("api/auth",authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 // Lancer le serveur
 const PORT = process.env.PORT || 5000;
