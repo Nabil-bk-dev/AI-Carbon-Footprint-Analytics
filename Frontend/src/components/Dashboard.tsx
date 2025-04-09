@@ -9,7 +9,6 @@ import { AIModel, FilterOptions } from '../types/AIModel';
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from 'react-router-dom';
 
-
 function Dashboard() {
   const [models, setModels] = useState<AIModel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,7 +25,6 @@ function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-
   const handleLogout = () => {
     logout();
     navigate('/'); // 👈 redirection vers la page de login
@@ -38,7 +36,13 @@ function Dashboard() {
         const res = await fetch('http://localhost:5000/api/models');
         if (!res.ok) throw new Error('Erreur lors du chargement des données');
         const data: AIModel[] = await res.json();
-        setModels(data);
+        const modelsWithId = data.map((model) => ({
+          ...model,
+          id: model._id ?? '',
+        }));
+
+        console.log("🔄 Modèles avec id :", modelsWithId);
+        setModels(modelsWithId);
       } catch (err: any) {
         setError(err.message || 'Erreur inconnue');
       } finally {

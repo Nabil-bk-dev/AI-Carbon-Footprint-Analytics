@@ -1,41 +1,52 @@
-import { jsPDF } from 'jspdf';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import Papa from 'papaparse';
 import { AIModel } from '../types/AIModel';
+import logoBase64 from '../assets/IALogo.PNG'; // 👈 ton logo en base64
 
 export const exportToPDF = (models: AIModel[]) => {
   const doc = new jsPDF();
-  
-  // Add title
-  doc.setFontSize(16);
-  doc.text('AI Models Carbon Footprint Report', 20, 20);
-  
-  // Add date
-  doc.setFontSize(12);
-  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 30);
-  
-  // Add table headers
-  const headers = ['Model', 'Provider', 'CO₂ (kg)', 'Energy (kWh)', 'Location'];
-  let y = 40;
-  
-  doc.setFontSize(12);
-  doc.text(headers[0], 20, y);
-  doc.text(headers[1], 60, y);
-  doc.text(headers[2], 100, y);
-  doc.text(headers[3], 140, y);
-  doc.text(headers[4], 180, y);
-  
-  // Add table content
-  models.forEach((model, index) => {
-    y = 50 + (index * 10);
-    
-    doc.text(model.name, 20, y);
-    doc.text(model.provider, 60, y);
-    doc.text(model.co2Emissions.toFixed(2), 100, y);
-    doc.text(model.energyConsumption.toFixed(2), 140, y);
-    doc.text(model.datacenterLocation.country, 180, y);
+
+  // ✅ Ajouter le logo en haut à droite
+  doc.addImage(logoBase64, 'PNG', 150, 10, 40, 15); // (image, format, x, y, width, height)
+
+  // ✅ Titre
+  doc.setFontSize(18);
+  doc.setTextColor(34, 139, 34); // vert foncé
+  doc.text('AI Carbon Footprint Report', 14, 20);
+
+  // ✅ Date
+  doc.setFontSize(11);
+  doc.setTextColor(90);
+  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+
+  // ✅ Tableau
+  autoTable(doc, {
+    startY: 35,
+    head: [['Model', 'Provider', 'CO₂ Emissions (kg)', 'Energy (kWh)', 'Country']],
+    body: models.map(model => [
+      model.name,
+      model.provider,
+      model.co2Emissions.toFixed(2),
+      model.energyConsumption.toFixed(2),
+      model.datacenterLocation.country,
+    ]),
+    styles: {
+      fontSize: 10,
+      halign: 'center',
+      cellPadding: 4,
+    },
+    headStyles: {
+      fillColor: [46, 204, 113],
+      textColor: 255,
+      fontStyle: 'bold',
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 245],
+    },
+    margin: { left: 14, right: 14 },
   });
-  
-  // Save the PDF
+
   doc.save('ai-carbon-footprint-report.pdf');
 };
 
@@ -51,13 +62,13 @@ export const exportToCSV = (models: AIModel[]) => {
     'Batch Size': model.parameters.batchSize,
     'Hardware Type': model.parameters.hardwareType,
     'Accuracy': model.metrics.accuracy,
-    'Inference Time (ms)': model.metrics.inferenceTime
+    'Inference Time (ms)': model.metrics.inferenceTime,
   }));
-  
+
   const csv = Papa.unparse(data);
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
-  
+
   link.href = URL.createObjectURL(blob);
   link.setAttribute('download', 'ai-carbon-footprint-data.csv');
   document.body.appendChild(link);

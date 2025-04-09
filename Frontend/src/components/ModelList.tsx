@@ -16,9 +16,13 @@ export const ModelList: React.FC<ModelListProps> = ({ models, onSelectModel, sel
         {models.map((model) => (
           <div
             key={model.id}
-            onClick={() => onSelectModel(model)}
+            onClick={() => {
+              onSelectModel(model);
+            }}            
             className={`flex items-center space-x-3 p-3 rounded-md cursor-pointer transition-colors ${
-              selectedModel?.id === model.id ? 'bg-green-50 border border-green-200' : 'hover:bg-gray-50'
+              selectedModel?.id === model.id
+                ? 'bg-green-50 border border-green-200'
+                : 'hover:bg-gray-50'
             }`}
           >
             <Server className="h-5 w-5 text-teal-600" />
@@ -33,6 +37,7 @@ export const ModelList: React.FC<ModelListProps> = ({ models, onSelectModel, sel
           </div>
         ))}
       </div>
+
       {selectedModel && (
         <div className="mt-6 pt-6 border-t border-gray-200">
           <h3 className="text-lg font-semibold mb-3">Model Details</h3>

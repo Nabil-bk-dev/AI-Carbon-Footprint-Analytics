@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ models, onOpenFilters, user, onL
         <div className="flex items-center space-x-2">
             <UserCircle className="h-6 w-6 text-white" />
             <span className="text-sm">
-              {user.name} ({user.email})
+              {user.name} {user.email}
             </span>
           </div>
 

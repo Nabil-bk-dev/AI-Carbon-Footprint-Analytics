@@ -7,4 +7,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  assetsInclude: ['**/*.PNG'], // ✅ Ajouté pour supporter les imports PNG
 });

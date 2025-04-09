@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, Popup, CircleMarker } from 'react-leaflet';
 import { AIModel } from '../types/AIModel';
 import 'leaflet/dist/leaflet.css';
 
@@ -33,14 +33,19 @@ export const Map: React.FC<MapProps> = ({ models, selectedModel }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {models.map((model) => (
-          <React.Fragment key={model.id}>
+
+        {models.map((model) => {
+          const isSelected = selectedModel?._id === model._id;
+
+          return (
             <CircleMarker
+              key={model._id}
               center={[model.datacenterLocation.lat, model.datacenterLocation.lng]}
-              radius={getMarkerSize(model.co2Emissions)}
+              radius={getMarkerSize(model.co2Emissions) + (isSelected ? 5 : 0)}
               fillColor={getMarkerColor(model.co2Emissions)}
-              color={selectedModel?.id === model.id ? '#2563EB' : getMarkerColor(model.co2Emissions)}
-              weight={selectedModel?.id === model.id ? 3 : 1}
+              color={isSelected ? '#2563EB' : '#333'} 
+              weight={isSelected ? 4 : 1}             
+              stroke={true}                           
               opacity={1}
               fillOpacity={0.6}
             >
@@ -54,8 +59,8 @@ export const Map: React.FC<MapProps> = ({ models, selectedModel }) => {
                 </div>
               </Popup>
             </CircleMarker>
-          </React.Fragment>
-        ))}
+          );
+        })}
       </MapContainer>
     </div>
   );
